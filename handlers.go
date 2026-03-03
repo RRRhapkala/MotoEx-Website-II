@@ -46,7 +46,50 @@ func CreateVehicleHandler(c *gin.Context) {
 }
 
 func UploadPhotosHandler(c *gin.Context) {
+	vId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	vObj, err := GetVehicleById(vId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	mainPhoto, err := c.FormFile("main_photo")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err = c.SaveUploadedFile(mainPhoto, "./static/uploads/main-photos/"+mainPhoto.Filename)
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, gin.H{"error": err.Error()})
+		return
+	}
+	form, err := c.MultipartForm()
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, gin.H{"error": err.Error()})
+		return
+	}
+	photos := form.File["photos"]
+	for _, photo := range photos {
+		err := c.SaveUploadedFile(photo, "./static/uploads/other-photos/"+photo.Filename)
+		if err != nil {
+			c.JSON(http.StatusNotAcceptable, gin.H{"error": err.Error()})
+			return
+		}
+	}
+	photosDir := []string{}
+	mainPhotoPath := "./static/uploads/main-photos/" + mainPhoto.Filename
+	photosDir = append(photosDir, mainPhotoPath)
+	for _, photo := range photos {
+		path := "./static/uploads/other-photos/" + photo.Filename
+		photosDir = append(photosDir, path)
+	}
 
+	vObj.MainPhoto = mainPhotoPath
+	vObj.Photos = photosDir
+	UpdateVehicleById(vId, vObj)
 }
 
 func UpdateVehicleByIdHandler(c *gin.Context) {
