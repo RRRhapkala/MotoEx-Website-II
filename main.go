@@ -27,7 +27,7 @@ func main() {
 		vehicles.POST("", CreateVehicleHandler)
 		vehicles.PUT("/:id", UpdateVehicleByIdHandler)
 		vehicles.DELETE("/:id", DeleteVehicleByIdHandler)
-		vehicles.POST("/:id/photos", UploadPhotosHandler)
+		vehicles.POST("/:id/photos", UploadPhotosByIdHandler)
 	}
 
 	server := http.Server{

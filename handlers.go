@@ -45,7 +45,7 @@ func CreateVehicleHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, vObj)
 }
 
-func UploadPhotosHandler(c *gin.Context) {
+func UploadPhotosByIdHandler(c *gin.Context) {
 	vId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -81,7 +81,6 @@ func UploadPhotosHandler(c *gin.Context) {
 	}
 	photosDir := []string{}
 	mainPhotoPath := "./static/uploads/main-photos/" + mainPhoto.Filename
-	photosDir = append(photosDir, mainPhotoPath)
 	for _, photo := range photos {
 		path := "./static/uploads/other-photos/" + photo.Filename
 		photosDir = append(photosDir, path)
