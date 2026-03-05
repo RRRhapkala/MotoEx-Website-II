@@ -14,6 +14,12 @@ import (
 )
 
 func main() {
+	err := InitDB("postgres://motoex:motoex@localhost:5432/motoex_db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
 	router := gin.Default()
 
 	router.LoadHTMLGlob("templates/*")
