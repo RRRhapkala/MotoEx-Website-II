@@ -12,7 +12,10 @@ func HealthCheckHandler(c *gin.Context) {
 }
 
 func GetAllVehiclesHandler(c *gin.Context) {
-	retVal := GetAllVehicles()
+	retVal, err := GetAllVehicles()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
 	c.JSON(http.StatusOK, retVal)
 }
 
