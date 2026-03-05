@@ -1,17 +1,29 @@
 package main
 
 import (
+	"context"
 	"errors"
-	"sync"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var (
-	VehicleStorage []Vehicle
-
-	nextId int = 1
-
-	mu sync.RWMutex
+	db *pgxpool.Pool
 )
+
+func InitDB(str string) error {
+	var err error
+	db, err = pgxpool.New(context.Background(), str)
+	if err != nil {
+		return errors.New("failed to init db")
+	}
+
+	err = db.Ping(context.Background())
+	if err != nil {
+		return errors.New("failed to ping db")
+	}
+	return nil
+}
 
 func GetAllVehicles() []Vehicle {
 	mu.RLock()
