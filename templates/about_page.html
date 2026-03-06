@@ -129,6 +129,8 @@
       background-size: cover;
       background-position: center;
       border: 2px solid rgba(255, 102, 0, 0.2);
+      aspect-ratio: 16 / 9;
+      width: 100%;
     }
     .bottom-carousel-image {
       border-radius: 10px;
@@ -139,6 +141,8 @@
       border: 2px solid transparent;
       opacity: 0.7;
       transition: opacity 0.2s ease, border-color 0.2s ease;
+      aspect-ratio: 16 / 9;
+      width: 100%;
     }
     .bottom-carousel-image:hover {
       border-color: #ff6600;
@@ -150,11 +154,10 @@
     }
     #slick-images {
       height: auto;
-      padding: 0 1vw;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    }
+    #slick-images > .slick-list {
+      padding-left: 0;
+      padding-right: 0;
     }
     #slider-nav {
       width: auto;
@@ -171,46 +174,39 @@
     #slider-nav > .slick-list > .slick-track > div {
       margin: min(0.75vw, 10px);
     }
-    #slick-images > button {
+    .slider-for.slick-slider {
       position: relative;
-      aspect-ratio: 1;
-      margin: 30px 20px 0;
-      object-fit: contain;
+    }
+    .slider-for .slick-next,
+    .slider-for .slick-prev {
+      z-index: 100;
       width: 40px;
       height: 40px;
       transition: opacity 0.2s ease, transform 0.2s ease;
       opacity: 0.7;
+      background-repeat: no-repeat;
+      background-size: contain;
     }
-    #slick-images > button:hover {
+    .slider-for .slick-next:hover,
+    .slider-for .slick-prev:hover {
       opacity: 1;
-      transform: scale(1.1);
+      transform: translateY(-50%) scale(1.1);
     }
-    .slick-next, .slick-next:hover {
+    .slider-for .slick-next {
+      right: 25px;
       background-image: url("/static/arrow-right.svg") !important;
       background-repeat: no-repeat !important;
       background-size: contain !important;
     }
-    .slick-prev, .slick-prev:hover {
+    .slider-for .slick-prev {
+      left: 25px;
       background-image: url("/static/arrow-left.svg") !important;
       background-repeat: no-repeat !important;
       background-size: contain !important;
     }
-    .slick-next::before, .slick-prev::before {
+    .slider-for .slick-next::before,
+    .slider-for .slick-prev::before {
       display: none;
-    }
-    .slick-next, .slick-prev {
-      background-repeat: no-repeat;
-      z-index: 100;
-      transition: transform 0.2s ease;
-    }
-    .slick-next:hover {
-      transform: translateY(-50%) scale(1.1) !important;
-    }
-    .slick-prev:hover {
-      transform: translateY(-50%) scale(1.1) !important;
-    }
-    .slick-arrow {
-      width: fit-content;
     }
     .info-panel {
       background: #3a3939;
@@ -218,7 +214,6 @@
       padding: 30px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       border: 1px solid rgba(255, 102, 0, 0.1);
-      height: 100%;
     }
     .vehicle-name {
       color: white;
@@ -353,6 +348,11 @@
       box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
     }
 
+    @media (max-width: 1199px) {
+      .info-panel {
+        margin-top: 20px;
+      }
+    }
     @media (max-width: 768px) {
       .title-1 {
         font-size: 28px;
@@ -360,8 +360,21 @@
       .link-name {
         font-size: 16px;
       }
+      .carousel-section {
+        padding: 15px 10px 10px;
+        border-radius: 15px;
+      }
+      .carousel-image {
+        border-radius: 10px;
+      }
       .info-panel {
-        margin-top: 20px;
+        padding: 20px;
+      }
+      .how-works {
+        margin-top: 25px !important;
+      }
+      .footer .col {
+        padding: 10px 20px;
       }
     }
   </style>
@@ -419,7 +432,7 @@
 
     <div class="container-fluid footer mt-4">
       <div class="row pt-2">
-        <div class="col left">
+        <div class="col-lg left">
           <h4 class="footer-left-H">
             <span class="devided-text" style="color:white;">ABOUT</span>
             <span class="devided-text" style="color:#ff6600">US</span>
@@ -428,7 +441,7 @@
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ad rerum aut earum corporis. Qui quia, magni illo sequi odit provident perferendis minima ullam autem. Vitae quo nisi dignissimos amet.
           </p>
         </div>
-        <div class="col center">
+        <div class="col-lg center">
           <h4 class="footer-left-H">
             <span class="devided-text" style="color:white;">CONTACT</span>
             <span class="devided-text" style="color:#ff6600">US</span>
@@ -448,7 +461,7 @@
             </li>
           </ul>
         </div>
-        <div class="col right">
+        <div class="col-lg right">
           <h4 class="footer-left-H">
             <span class="devided-text" style="color:white">FOLLOW</span>
             <span class="devided-text" style="color:#ff6600">US</span>
@@ -463,11 +476,6 @@
     </div>
 
     <script>
-      function adjustHeight(el, aspectRatio) {
-        var width = el.getBoundingClientRect().width;
-        el.style.height = Math.round(width / aspectRatio) + 'px';
-      }
-
       var vehicleId = window.location.pathname.split('/').pop();
 
       fetch('/cars/' + vehicleId)
@@ -483,8 +491,8 @@
           var allPhotos = [v.main_photo].concat(v.photos || []);
           allPhotos.forEach(function(photo) {
             var src = fixPath(photo);
-            sliderFor.innerHTML += '<div class="carousel-image auto-resize" style="background-image:url(\'' + src + '\')"></div>';
-            sliderNav.innerHTML += '<div class="bottom-carousel-image auto-resize" style="background-image:url(\'' + src + '\')"></div>';
+            sliderFor.innerHTML += '<div class="carousel-image" style="background-image:url(\'' + src + '\')"></div>';
+            sliderNav.innerHTML += '<div class="bottom-carousel-image" style="background-image:url(\'' + src + '\')"></div>';
           });
 
           var panel = document.getElementById('info-panel');
@@ -499,14 +507,21 @@
             '<p class="description-title">DESCRIPTION</p>' +
             '<p class="description-text">' + v.description + '</p>';
 
-          var isWidthSmall = document.body.getBoundingClientRect().width < 700;
-
           $('.slider-for').slick({
             slidesToShow: 1,
             slidesToScroll: 1,
-            arrows: !isWidthSmall,
+            arrows: true,
             fade: true,
-            asNavFor: '.slider-nav'
+            swipe: true,
+            asNavFor: '.slider-nav',
+            responsive: [
+              {
+                breakpoint: 700,
+                settings: {
+                  arrows: false
+                }
+              }
+            ]
           });
           $('.slider-nav').slick({
             slidesToShow: 4,
@@ -516,16 +531,23 @@
             centerMode: true,
             focusOnSelect: true,
             arrows: false,
-            infinite: true
+            infinite: true,
+            swipe: true,
+            responsive: [
+              {
+                breakpoint: 992,
+                settings: {
+                  slidesToShow: 3
+                }
+              },
+              {
+                breakpoint: 576,
+                settings: {
+                  slidesToShow: 2
+                }
+              }
+            ]
           });
-
-          function resizeImages() {
-            Array.from($('.auto-resize')).forEach(function(image) {
-              adjustHeight(image, 16/9);
-            });
-          }
-          resizeImages();
-          $(window).on('resize', resizeImages);
         });
     </script>
 </body>
