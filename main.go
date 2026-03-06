@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	err := InitDB("postgres://motoex:motoex@localhost:5432/motoex_db")
+	err := InitDB(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,10 +30,14 @@ func main() {
 	{
 		vehicles.GET("", GetAllVehiclesHandler)
 		vehicles.GET("/:id", GetVehicleByIdHandler)
-		vehicles.POST("", CreateVehicleHandler)
-		vehicles.PUT("/:id", UpdateVehicleByIdHandler)
-		vehicles.DELETE("/:id", DeleteVehicleByIdHandler)
-		vehicles.POST("/:id/photos", UploadPhotosByIdHandler)
+	}
+	adminGroup := router.Group("/admin")
+	adminGroup.Use(AuthMiddleware())
+	{
+		adminGroup.POST("", CreateVehicleHandler)
+		adminGroup.PUT("/:id", UpdateVehicleByIdHandler)
+		adminGroup.DELETE("/:id", DeleteVehicleByIdHandler)
+		adminGroup.POST("/:id/photos", UploadPhotosByIdHandler)
 	}
 
 	server := http.Server{
