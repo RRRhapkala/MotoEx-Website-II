@@ -92,7 +92,13 @@ func UploadPhotosByIdHandler(c *gin.Context) {
 
 	vObj.MainPhoto = mainPhotoPath
 	vObj.Photos = photosDir
-	UpdateVehicleById(vId, vObj)
+	var v Vehicle
+	v, err = UpdateVehicleById(vId, vObj)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusAccepted, v)
 }
 
 func UpdateVehicleByIdHandler(c *gin.Context) {
