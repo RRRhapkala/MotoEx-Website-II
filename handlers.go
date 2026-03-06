@@ -11,6 +11,18 @@ func HealthCheckHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "healthy"})
 }
 
+func MainPageHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "main_page.html", nil)
+}
+
+func CatalogPageHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "catalog_page.html", nil)
+}
+
+func AboutPageHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "about_page.html", nil)
+}
+
 func GetAllVehiclesHandler(c *gin.Context) {
 	retVal, err := GetAllVehicles()
 	if err != nil {
