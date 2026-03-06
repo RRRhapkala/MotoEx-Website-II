@@ -70,8 +70,8 @@ func UpdateVehicleById(id int, v Vehicle) (Vehicle, error) {
 	if err != nil {
 		return Vehicle{}, errors.New("can't update vehicle")
 	}
-	numOfhanges := cT.RowsAffected()
-	if numOfhanges == 0 {
+	numOfСhanges := cT.RowsAffected()
+	if numOfСhanges == 0 {
 		return Vehicle{}, errors.New("can't find vehicle for this id")
 	}
 	return v, nil
