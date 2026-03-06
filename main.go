@@ -25,6 +25,9 @@ func main() {
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
 	router.GET("/health", HealthCheckHandler)
+	router.GET("/", MainPageHandler)
+	router.GET("/catalog", CatalogPageHandler)
+	router.GET("/about/:id", AboutPageHandler)
 
 	vehicles := router.Group("/cars")
 	{
