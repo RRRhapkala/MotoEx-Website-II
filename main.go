@@ -28,6 +28,7 @@ func main() {
 	router.GET("/", MainPageHandler)
 	router.GET("/catalog", CatalogPageHandler)
 	router.GET("/about/:id", AboutPageHandler)
+	router.GET("/crud", CrudPageHandler)
 
 	vehicles := router.Group("/cars")
 	{
