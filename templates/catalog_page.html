@@ -21,6 +21,8 @@
     body {
       background: linear-gradient(135deg, #4a4a4a 0%, #3a3939 100%) fixed;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       font-family: 'Outfit', sans-serif;
       font-weight: 300;
     }
@@ -137,6 +139,22 @@
     }
     .col-in-row {
       margin-bottom: 30px;
+    }
+    .empty-state {
+      width: 100%;
+      padding: 80px 20px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.35);
+    }
+    .empty-state i {
+      font-size: 64px;
+      display: block;
+      margin-bottom: 15px;
+      color: rgba(255, 102, 0, 0.3);
+    }
+    .empty-state p {
+      font-size: 18px;
+      letter-spacing: 2px;
     }
     .how-works {
       margin-top: 50px !important;
@@ -272,7 +290,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container" style="flex: 1;">
     <div class="how-works mt-4">
       <div class="text-center">
         <p class="title-1">CAR CATALOG</p>
@@ -333,6 +351,14 @@
         .then(res => res.json())
         .then(vehicles => {
           const grid = document.getElementById('catalog-grid');
+          if (!vehicles || vehicles.length === 0) {
+            grid.innerHTML =
+              '<div class="empty-state">' +
+                '<i class="bx bx-car"></i>' +
+                '<p>No vehicles in catalog yet</p>' +
+              '</div>';
+            return;
+          }
           vehicles.forEach(v => {
             const col = document.createElement('div');
             col.className = 'col-lg-4 col-md-6 col-in-row';

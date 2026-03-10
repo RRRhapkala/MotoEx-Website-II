@@ -23,6 +23,10 @@ func AboutPageHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "about_page.html", nil)
 }
 
+func CrudPageHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "add_page.html", nil)
+}
+
 func GetAllVehiclesHandler(c *gin.Context) {
 	retVal, err := GetAllVehicles()
 	if err != nil {

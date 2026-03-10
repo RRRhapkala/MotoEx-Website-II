@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <title>Admin Panel</title>
+  <style>
+    * {
+      letter-spacing: 1.5px;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+      background: linear-gradient(135deg, #4a4a4a 0%, #3a3939 100%) fixed;
+      min-height: 100vh;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+    }
+
+    /* NAVBAR */
+    .motoex-logo { cursor: pointer; width: 150px; transition: transform 0.2s ease; }
+    .motoex-logo:hover { transform: scale(1.05); }
+    .navbar {
+      background: rgba(30, 30, 30, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 102, 0, 0.15);
+    }
+    .navbar-toggler-icon { background-image: url("/static/toggler-icon.svg"); }
+    .navbar-nav { margin-left: auto; margin-top: 2vh; }
+    .nav-item { display: block; text-align: center; margin-left: 5px; margin-right: 5px; }
+    .nav-link { padding: 8px 20px; }
+    .link-name {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      display: inline-block;
+      position: relative;
+      padding: 8px 0;
+      transition: color 0.3s ease;
+    }
+    .link-name::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, #ff6600, #ff8533);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    .link-name:hover { color: #ff8533; }
+    .link-name:hover::after { width: 100%; }
+
+    /* TITLE */
+    .title-1 {
+      font-size: clamp(28px, 5vh, 48px);
+      color: white;
+      font-weight: 600;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      position: relative;
+      display: inline-block;
+      padding-bottom: 15px;
+    }
+    .title-1::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 4px;
+      background: linear-gradient(90deg, #ff6600, #ff8533);
+      border-radius: 2px;
+    }
+
+    /* CARDS */
+    .panel-card {
+      background: #3a3939;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 102, 0, 0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      padding: 30px 40px;
+      margin-bottom: 30px;
+    }
+
+    /* AUTH BAR */
+    .auth-bar {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .auth-bar label {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      margin: 0;
+    }
+    .auth-bar input {
+      flex: 1;
+      margin: 0;
+    }
+
+    /* TABS */
+    .tab-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 102, 0, 0.15);
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.6);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { border-color: rgba(255, 102, 0, 0.4); color: rgba(255, 255, 255, 0.9); }
+    .tab-btn.active {
+      background: rgba(255, 102, 0, 0.15);
+      border-color: rgba(255, 102, 0, 0.5);
+      color: #ff8533;
+      font-weight: 400;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* FORM ELEMENTS */
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    input, select, textarea {
+      margin-bottom: 20px;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 102, 0, 0.15);
+      background-color: rgba(255, 255, 255, 0.07);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: rgba(255, 102, 0, 0.5);
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    ::placeholder { color: rgba(255, 255, 255, 0.35); }
+    textarea { resize: vertical; min-height: 100px; }
+    select option { color: white; background-color: #3a3939; }
+    input[type="file"] { cursor: pointer; padding: 10px; }
+    input[type="file"]::file-selector-button {
+      background: rgba(255, 102, 0, 0.15);
+      border: 1px solid rgba(255, 102, 0, 0.3);
+      color: rgba(255, 255, 255, 0.85);
+      border-radius: 6px;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 1px;
+      transition: background-color 0.2s ease;
+      margin-right: 10px;
+    }
+    input[type="file"]::file-selector-button:hover { background: rgba(255, 102, 0, 0.3); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .section-divider { border: none; border-top: 1px solid rgba(255, 102, 0, 0.1); margin: 5px 0 25px; }
+    .section-label {
+      color: #ff6600;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+
+    /* BUTTONS */
+    .btn-primary-orange {
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff6600, #ff8533);
+      color: white;
+      border: none;
+      padding: 13px 20px;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      width: 100%;
+      margin-top: 5px;
+    }
+    .btn-primary-orange:hover:not(:disabled) { opacity: 0.85; transform: translateY(-2px); }
+    .btn-primary-orange:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .btn-danger-red {
+      cursor: pointer;
+      background: linear-gradient(135deg, #cc2200, #ff3311);
+      color: white;
+      border: none;
+      padding: 13px 20px;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      width: 100%;
+      margin-top: 5px;
+    }
+    .btn-danger-red:hover:not(:disabled) { opacity: 0.85; transform: translateY(-2px); }
+    .btn-danger-red:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .btn-outline {
+      cursor: pointer;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 102, 0, 0.3);
+      padding: 10px 20px;
+      font-size: 13px;
+      letter-spacing: 2px;
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.2s ease;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .btn-outline:hover { border-color: rgba(255, 102, 0, 0.7); color: white; }
+
+    /* STATUS */
+    .status-msg {
+      display: none;
+      margin-top: 15px;
+      padding: 13px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+    .status-msg.success {
+      background: rgba(0, 200, 100, 0.12);
+      border: 1px solid rgba(0, 200, 100, 0.3);
+      color: #00c864;
+    }
+    .status-msg.error {
+      background: rgba(255, 60, 60, 0.12);
+      border: 1px solid rgba(255, 60, 60, 0.3);
+      color: #ff4444;
+    }
+
+    /* VEHICLE LIST */
+    .vehicle-list {
+      max-height: 280px;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 102, 0, 0.1);
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .vehicle-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: background 0.15s ease;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 14px;
+    }
+    .vehicle-list-item:last-child { border-bottom: none; }
+    .vehicle-list-item:hover { background: rgba(255, 102, 0, 0.08); }
+    .vehicle-list-item.selected { background: rgba(255, 102, 0, 0.15); color: white; }
+    .vehicle-list-item .v-id {
+      color: #ff6600;
+      font-size: 12px;
+      margin-right: 10px;
+      min-width: 30px;
+    }
+    .vehicle-list-empty {
+      padding: 20px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.35);
+      font-size: 13px;
+    }
+
+    /* DELETE CONFIRM */
+    .delete-confirm {
+      display: none;
+      background: rgba(255, 60, 60, 0.08);
+      border: 1px solid rgba(255, 60, 60, 0.2);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .delete-confirm p { color: rgba(255, 255, 255, 0.85); margin-bottom: 5px; font-size: 15px; }
+    .delete-confirm span { color: white; font-weight: 600; }
+    .delete-confirm small { color: rgba(255, 255, 255, 0.45); font-size: 12px; display: block; margin-top: 5px; }
+
+    /* FOOTER */
+    .footer {
+      background: linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+      padding: 40px 20px 20px;
+    }
+    .col { color: white; padding: 20px; }
+    h4 { text-align: center; font-weight: 600; font-size: 24px; margin-bottom: 20px; }
+    .contact-data { list-style-type: none; padding: 0 5vw; }
+    .bx { width: auto; }
+    .footer-info {
+      text-align: justify;
+      margin: auto 0 auto 7px;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .footer-list-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      transition: transform 0.15s ease;
+    }
+    .footer-list-item:hover { transform: translateX(5px); }
+    .footer-list-item i { color: #ff6600; transition: transform 0.15s ease; }
+    .footer-list-item:hover i { transform: scale(1.1); }
+    .social-media-link {
+      width: min-content;
+      margin-right: 15px;
+      transition: transform 0.2s ease;
+      display: inline-block;
+    }
+    .social-media-link:hover { transform: translateY(-5px) scale(1.1); }
+    .social-media-link i { transition: color 0.2s ease; }
+    .social-media-link:hover i { color: #ff6600 !important; }
+
+    html { scroll-behavior: auto; }
+    @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #2d2d2d; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #ff6600, #ff8533);
+      border-radius: 10px;
+      border: 2px solid #2d2d2d;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #ff8533, #ff6600);
+      box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      .title-1 { font-size: 28px; }
+      .link-name { font-size: 16px; }
+      .panel-card { padding: 25px 20px; }
+      .two-col { grid-template-columns: 1fr; gap: 0; }
+      .auth-bar { flex-direction: column; align-items: stretch; }
+      .tab-buttons { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar sticky-top navbar-expand-lg">
+    <div class="container">
+      <a href="/" class="navbar-brand mb-0">
+        <img src="/static/motoex-logo-true.svg" class="motoex-logo" alt="MotoEx logo"/>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="nav-buttons navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a href="/catalog" class="nav-link"><span class="link-name">CATALOG</span></a>
+          </li>
+          <li class="nav-item active">
+            <a href="/reviews" class="nav-link"><span class="link-name">REVIEWS</span></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container my-5">
+    <div class="text-center mb-4">
+      <p class="title-1">ADMIN PANEL</p>
+    </div>
+
+    <!-- AUTH -->
+    <div class="panel-card">
+      <div class="auth-bar">
+        <label for="admin-key">Admin Key</label>
+        <input id="admin-key" type="password" placeholder="Enter admin key">
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="panel-card">
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="switchTab('add')">+ ADD</button>
+        <button class="tab-btn" onclick="switchTab('update')">✎ UPDATE</button>
+        <button class="tab-btn" onclick="switchTab('delete')">✕ DELETE</button>
+      </div>
+
+      <!-- ===== ADD ===== -->
+      <div class="tab-content active" id="tab-add">
+        <form id="add-form">
+          <p class="section-label">Basic Info</p>
+          <div class="two-col">
+            <div>
+              <label for="add-brand">Brand</label>
+              <input id="add-brand" required placeholder="e.g. BMW">
+            </div>
+            <div>
+              <label for="add-model">Model</label>
+              <input id="add-model" required placeholder="e.g. 5 Series">
+            </div>
+          </div>
+          <label for="add-description">Description</label>
+          <textarea id="add-description" required placeholder="Vehicle description..."></textarea>
+
+          <hr class="section-divider">
+          <p class="section-label">Specs</p>
+          <div class="two-col">
+            <div>
+              <label for="add-engine">Engine</label>
+              <input id="add-engine" required placeholder="e.g. 2.0 TDI">
+            </div>
+            <div>
+              <label for="add-fuel_type">Fuel Type</label>
+              <input id="add-fuel_type" required placeholder="e.g. Diesel">
+            </div>
+          </div>
+          <div class="two-col">
+            <div>
+              <label for="add-transmission">Transmission</label>
+              <input id="add-transmission" required placeholder="e.g. Automatic">
+            </div>
+            <div>
+              <label for="add-hp_amount">Horsepower</label>
+              <input id="add-hp_amount" type="number" required placeholder="e.g. 190">
+            </div>
+          </div>
+          <div class="two-col">
+            <div>
+              <label for="add-year_of_prod">Year of Production</label>
+              <input id="add-year_of_prod" type="number" required placeholder="e.g. 2020">
+            </div>
+            <div>
+              <label for="add-mileage">Mileage (km)</label>
+              <input id="add-mileage" type="number" required placeholder="e.g. 85000">
+            </div>
+          </div>
+
+          <hr class="section-divider">
+          <p class="section-label">Photos</p>
+          <label for="add-main_photo">Main Photo</label>
+          <input type="file" id="add-main_photo" required accept="image/*">
+          <label for="add-photos">Additional Photos</label>
+          <input type="file" id="add-photos" accept="image/*" multiple>
+
+          <button type="submit" class="btn-primary-orange">ADD VEHICLE</button>
+          <div class="status-msg" id="add-status"></div>
+        </form>
+      </div>
+
+      <!-- ===== UPDATE ===== -->
+      <div class="tab-content" id="tab-update">
+        <p class="section-label">Select Vehicle</p>
+        <button class="btn-outline" onclick="loadVehicleList('update')">
+          <i class='bx bx-refresh'></i> Load vehicle list
+        </button>
+        <div class="vehicle-list" id="update-vehicle-list">
+          <div class="vehicle-list-empty">Click "Load vehicle list" to begin</div>
+        </div>
+
+        <form id="update-form">
+          <input type="hidden" id="update-id">
+
+          <p class="section-label">Basic Info</p>
+          <div class="two-col">
+            <div>
+              <label for="update-brand">Brand</label>
+              <input id="update-brand" required placeholder="e.g. BMW">
+            </div>
+            <div>
+              <label for="update-model">Model</label>
+              <input id="update-model" required placeholder="e.g. 5 Series">
+            </div>
+          </div>
+          <label for="update-description">Description</label>
+          <textarea id="update-description" required placeholder="Vehicle description..."></textarea>
+
+          <hr class="section-divider">
+          <p class="section-label">Specs</p>
+          <div class="two-col">
+            <div>
+              <label for="update-engine">Engine</label>
+              <input id="update-engine" required placeholder="e.g. 2.0 TDI">
+            </div>
+            <div>
+              <label for="update-fuel_type">Fuel Type</label>
+              <input id="update-fuel_type" required placeholder="e.g. Diesel">
+            </div>
+          </div>
+          <div class="two-col">
+            <div>
+              <label for="update-transmission">Transmission</label>
+              <input id="update-transmission" required placeholder="e.g. Automatic">
+            </div>
+            <div>
+              <label for="update-hp_amount">Horsepower</label>
+              <input id="update-hp_amount" type="number" required placeholder="e.g. 190">
+            </div>
+          </div>
+          <div class="two-col">
+            <div>
+              <label for="update-year_of_prod">Year of Production</label>
+              <input id="update-year_of_prod" type="number" required placeholder="e.g. 2020">
+            </div>
+            <div>
+              <label for="update-mileage">Mileage (km)</label>
+              <input id="update-mileage" type="number" required placeholder="e.g. 85000">
+            </div>
+          </div>
+
+          <hr class="section-divider">
+          <p class="section-label">Photos (optional — replaces existing)</p>
+          <label for="update-main_photo">Main Photo</label>
+          <input type="file" id="update-main_photo" accept="image/*">
+          <label for="update-photos">Additional Photos</label>
+          <input type="file" id="update-photos" accept="image/*" multiple>
+
+          <button type="submit" class="btn-primary-orange">SAVE CHANGES</button>
+          <div class="status-msg" id="update-status"></div>
+        </form>
+      </div>
+
+      <!-- ===== DELETE ===== -->
+      <div class="tab-content" id="tab-delete">
+        <p class="section-label">Select Vehicle</p>
+        <button class="btn-outline" onclick="loadVehicleList('delete')">
+          <i class='bx bx-refresh'></i> Load vehicle list
+        </button>
+        <div class="vehicle-list" id="delete-vehicle-list">
+          <div class="vehicle-list-empty">Click "Load vehicle list" to begin</div>
+        </div>
+
+        <div class="delete-confirm" id="delete-confirm">
+          <p>You are about to delete:</p>
+          <p><span id="delete-vehicle-name">—</span> <span style="color:rgba(255,255,255,0.45)">(ID: <span id="delete-vehicle-id-display">—</span>)</span></p>
+          <small>This action cannot be undone</small>
+        </div>
+
+        <input type="hidden" id="delete-id">
+        <button class="btn-danger-red" id="delete-btn" onclick="deleteVehicle()" disabled>DELETE VEHICLE</button>
+        <div class="status-msg" id="delete-status"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="container-fluid footer">
+    <div class="row pt-2">
+      <div class="col left">
+        <h4><span style="color:white;">ABOUT</span> <span style="color:#ff6600">US</span></h4>
+        <p class="footer-info">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ad rerum aut earum corporis. Qui quia, magni illo sequi odit provident perferendis minima ullam autem. Vitae quo nisi dignissimos amet.</p>
+      </div>
+      <div class="col center">
+        <h4><span style="color:white;">CONTACT</span> <span style="color:#ff6600">US</span></h4>
+        <ul class="contact-data row">
+          <li class="d-flex footer-list-item"><i class='bx bx-envelope bx-md'></i><p class="footer-info">example@gmail.com</p></li>
+          <li class="d-flex footer-list-item"><i class='bx bx-phone bx-md'></i><p class="footer-info">+48 784 213 831</p></li>
+          <li class="d-flex footer-list-item"><i class='bx bx-home-alt bx-md'></i><p class="footer-info">Warsaw, Poland, Street, 00-000</p></li>
+        </ul>
+      </div>
+      <div class="col right">
+        <h4><span style="color:white">FOLLOW</span> <span style="color:#ff6600">US</span></h4>
+        <div class="row d-flex flex-row justify-content-center text-center">
+          <a href="https://www.facebook.com/motoex2010" class="social-media-link"><i class='bx bxl-facebook-square bx-lg' style="color:white;"></i></a>
+          <a href="https://www.instagram.com/motoex2010/?igshid=NTc4MTIwNjQ2YQ%3D%3D" class="social-media-link"><i class='bx bxl-instagram-alt bx-lg' style="color:white;"></i></a>
+          <a href="https://www.tiktok.com/@motoex2010" class="social-media-link"><i class='bx bxl-tiktok bx-lg' style="color:white;"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Helpers ---
+    function adminKey() { return document.getElementById('admin-key').value; }
+
+    function showStatus(id, msg, type) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = 'status-msg ' + type;
+      el.style.display = 'block';
+    }
+
+    function setLoading(btn, loading, defaultText) {
+      btn.disabled = loading;
+      btn.textContent = loading ? 'LOADING...' : defaultText;
+    }
+
+    // --- Tabs ---
+    function switchTab(name) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // --- Load vehicle list ---
+    async function loadVehicleList(tab) {
+      const listEl = document.getElementById(tab + '-vehicle-list');
+      listEl.innerHTML = '<div class="vehicle-list-empty">Loading...</div>';
+
+      const res = await fetch('/cars');
+      if (!res.ok) {
+        listEl.innerHTML = '<div class="vehicle-list-empty">Failed to load vehicles</div>';
+        return;
+      }
+      const vehicles = await res.json();
+
+      if (!vehicles || vehicles.length === 0) {
+        listEl.innerHTML = '<div class="vehicle-list-empty">No vehicles found</div>';
+        return;
+      }
+
+      listEl.innerHTML = '';
+      vehicles.forEach(v => {
+        const item = document.createElement('div');
+        item.className = 'vehicle-list-item';
+        item.dataset.id = v.id;
+        item.innerHTML = '<span><span class="v-id">#' + v.id + '</span>' + v.brand + ' ' + v.model + '</span>';
+        item.addEventListener('click', () => {
+          listEl.querySelectorAll('.vehicle-list-item').forEach(i => i.classList.remove('selected'));
+          item.classList.add('selected');
+          if (tab === 'update') fillUpdateForm(v);
+          if (tab === 'delete') selectDelete(v);
+        });
+        listEl.appendChild(item);
+      });
+    }
+
+    // --- ADD ---
+    document.getElementById('add-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('.btn-primary-orange');
+      setLoading(btn, true, 'ADD VEHICLE');
+
+      const body = {
+        brand:        document.getElementById('add-brand').value,
+        model:        document.getElementById('add-model').value,
+        description:  document.getElementById('add-description').value,
+        engine:       document.getElementById('add-engine').value,
+        fuel_type:    document.getElementById('add-fuel_type').value,
+        transmission: document.getElementById('add-transmission').value,
+        hp_amount:    parseInt(document.getElementById('add-hp_amount').value),
+        year_of_prod: parseInt(document.getElementById('add-year_of_prod').value),
+        mileage:      parseInt(document.getElementById('add-mileage').value),
+      };
+
+      let res = await fetch('/admin', {
+        method: 'POST',
+        headers: { 'Authorization': adminKey(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        showStatus('add-status', 'Error: ' + (err.error || res.statusText), 'error');
+        setLoading(btn, false, 'ADD VEHICLE');
+        return;
+      }
+
+      const vehicle = await res.json();
+      btn.textContent = 'UPLOADING PHOTOS...';
+
+      const fd = new FormData();
+      fd.append('main_photo', document.getElementById('add-main_photo').files[0]);
+      for (const f of document.getElementById('add-photos').files) fd.append('photos', f);
+
+      res = await fetch('/admin/' + vehicle.id + '/photos', {
+        method: 'POST',
+        headers: { 'Authorization': adminKey() },
+        body: fd,
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        showStatus('add-status', 'Created (id: ' + vehicle.id + ') but photo upload failed: ' + (err.error || res.statusText), 'error');
+      } else {
+        showStatus('add-status', 'Vehicle added! ID: ' + vehicle.id, 'success');
+        this.reset();
+      }
+      setLoading(btn, false, 'ADD VEHICLE');
+    });
+
+    // --- UPDATE ---
+    let currentVehiclePhotos = { main_photo: '', photos: [] };
+
+    function fillUpdateForm(v) {
+      currentVehiclePhotos = { main_photo: v.main_photo || '', photos: v.photos || [] };
+      document.getElementById('update-id').value           = v.id;
+      document.getElementById('update-brand').value        = v.brand;
+      document.getElementById('update-model').value        = v.model;
+      document.getElementById('update-description').value  = v.description;
+      document.getElementById('update-engine').value       = v.engine;
+      document.getElementById('update-fuel_type').value    = v.fuel_type;
+      document.getElementById('update-transmission').value = v.transmission;
+      document.getElementById('update-hp_amount').value    = v.hp_amount;
+      document.getElementById('update-year_of_prod').value = v.year_of_prod;
+      document.getElementById('update-mileage').value      = v.mileage;
+    }
+
+    document.getElementById('update-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('update-id').value;
+      if (!id) { showStatus('update-status', 'Select a vehicle from the list first', 'error'); return; }
+
+      const btn = this.querySelector('.btn-primary-orange');
+      setLoading(btn, true, 'SAVE CHANGES');
+
+      // Preserve existing photos — backend overwrites all fields on PUT
+      const body = {
+        brand:        document.getElementById('update-brand').value,
+        model:        document.getElementById('update-model').value,
+        description:  document.getElementById('update-description').value,
+        engine:       document.getElementById('update-engine').value,
+        fuel_type:    document.getElementById('update-fuel_type').value,
+        transmission: document.getElementById('update-transmission').value,
+        hp_amount:    parseInt(document.getElementById('update-hp_amount').value),
+        year_of_prod: parseInt(document.getElementById('update-year_of_prod').value),
+        mileage:      parseInt(document.getElementById('update-mileage').value),
+        main_photo:   currentVehiclePhotos.main_photo,
+        photos:       currentVehiclePhotos.photos,
+      };
+
+      let res = await fetch('/admin/' + id, {
+        method: 'PUT',
+        headers: { 'Authorization': adminKey(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        showStatus('update-status', 'Error: ' + (err.error || res.statusText), 'error');
+        setLoading(btn, false, 'SAVE CHANGES');
+        return;
+      }
+
+      // Upload photos only if files selected
+      const mainPhotoFile = document.getElementById('update-main_photo').files[0];
+      const otherFiles    = document.getElementById('update-photos').files;
+
+      if (mainPhotoFile) {
+        btn.textContent = 'UPLOADING PHOTOS...';
+        const fd = new FormData();
+        fd.append('main_photo', mainPhotoFile);
+        for (const f of otherFiles) fd.append('photos', f);
+
+        res = await fetch('/admin/' + id + '/photos', {
+          method: 'POST',
+          headers: { 'Authorization': adminKey() },
+          body: fd,
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          showStatus('update-status', 'Updated but photo upload failed: ' + (err.error || res.statusText), 'error');
+          setLoading(btn, false, 'SAVE CHANGES');
+          return;
+        }
+      }
+
+      showStatus('update-status', 'Vehicle #' + id + ' updated successfully!', 'success');
+      setLoading(btn, false, 'SAVE CHANGES');
+    });
+
+    // --- DELETE ---
+    function selectDelete(v) {
+      document.getElementById('delete-id').value               = v.id;
+      document.getElementById('delete-vehicle-name').textContent = v.brand + ' ' + v.model;
+      document.getElementById('delete-vehicle-id-display').textContent = v.id;
+      document.getElementById('delete-confirm').style.display  = 'block';
+      document.getElementById('delete-btn').disabled           = false;
+    }
+
+    async function deleteVehicle() {
+      const id = document.getElementById('delete-id').value;
+      if (!id) return;
+
+      const btn = document.getElementById('delete-btn');
+      setLoading(btn, true, 'DELETE VEHICLE');
+
+      const res = await fetch('/admin/' + id, {
+        method: 'DELETE',
+        headers: { 'Authorization': adminKey() },
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        showStatus('delete-status', 'Error: ' + (err.error || res.statusText), 'error');
+      } else {
+        showStatus('delete-status', 'Vehicle #' + id + ' deleted.', 'success');
+        document.getElementById('delete-confirm').style.display = 'none';
+        document.getElementById('delete-id').value = '';
+        loadVehicleList('delete');
+      }
+
+      setLoading(btn, false, 'DELETE VEHICLE');
+      btn.disabled = true;
+    }
+  </script>
+</body>
+</html>
