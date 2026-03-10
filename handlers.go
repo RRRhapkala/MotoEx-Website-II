@@ -2,9 +2,11 @@ package main
 
 import (
 	"net/http"
+	"path/filepath"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func HealthCheckHandler(c *gin.Context) {
@@ -59,7 +61,7 @@ func CreateVehicleHandler(c *gin.Context) {
 	}
 	vObj, err := CreateVehicle(v)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create vehicle"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusCreated, vObj)
@@ -81,7 +83,8 @@ func UploadPhotosByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err = c.SaveUploadedFile(mainPhoto, "./static/uploads/main-photos/"+mainPhoto.Filename)
+	mainName := uuid.New().String() + filepath.Ext(mainPhoto.Filename)
+	err = c.SaveUploadedFile(mainPhoto, "./static/uploads/main-photos/"+mainName)
 	if err != nil {
 		c.JSON(http.StatusNotAcceptable, gin.H{"error": err.Error()})
 		return
@@ -92,19 +95,18 @@ func UploadPhotosByIdHandler(c *gin.Context) {
 		return
 	}
 	photos := form.File["photos"]
+	photosDir := []string{}
 	for _, photo := range photos {
-		err := c.SaveUploadedFile(photo, "./static/uploads/other-photos/"+photo.Filename)
+		name := uuid.New().String() + filepath.Ext(photo.Filename)
+		err := c.SaveUploadedFile(photo, "./static/uploads/other-photos/"+name)
 		if err != nil {
 			c.JSON(http.StatusNotAcceptable, gin.H{"error": err.Error()})
 			return
 		}
+		photosDir = append(photosDir, "./static/uploads/other-photos/"+name)
 	}
-	photosDir := []string{}
-	mainPhotoPath := "./static/uploads/main-photos/" + mainPhoto.Filename
-	for _, photo := range photos {
-		path := "./static/uploads/other-photos/" + photo.Filename
-		photosDir = append(photosDir, path)
-	}
+
+	mainPhotoPath := "./static/uploads/main-photos/" + mainName
 
 	vObj.MainPhoto = mainPhotoPath
 	vObj.Photos = photosDir

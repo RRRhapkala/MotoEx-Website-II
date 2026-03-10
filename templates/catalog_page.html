@@ -362,13 +362,28 @@
           vehicles.forEach(v => {
             const col = document.createElement('div');
             col.className = 'col-lg-4 col-md-6 col-in-row';
-            col.innerHTML =
-              '<div class="card">' +
-                '<a href="/about/' + v.id + '" class="card-link">' +
-                  '<img src="' + v.main_photo.replace(/^\.\//, '/') + '" alt="' + v.brand + ' ' + v.model + '" class="card-img" loading="lazy">' +
-                  '<p class="car-type">' + v.brand + ' ' + v.model + '</p>' +
-                '</a>' +
-              '</div>';
+
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const link = document.createElement('a');
+            link.href = '/about/' + v.id;
+            link.className = 'card-link';
+
+            const img = document.createElement('img');
+            img.src = v.main_photo.replace(/^\.\//, '/');
+            img.alt = v.brand + ' ' + v.model;
+            img.className = 'card-img';
+            img.loading = 'lazy';
+
+            const label = document.createElement('p');
+            label.className = 'car-type';
+            label.textContent = v.brand + ' ' + v.model;
+
+            link.appendChild(img);
+            link.appendChild(label);
+            card.appendChild(link);
+            col.appendChild(card);
             grid.appendChild(col);
           });
         });
