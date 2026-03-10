@@ -587,16 +587,43 @@
           });
 
           var panel = document.getElementById('info-panel');
-          panel.innerHTML =
-            '<h3 class="vehicle-name">' + v.brand + ' ' + v.model + '</h3>' +
-            '<div class="info-row"><i class="bx bxs-cog bx-md"></i><span class="info-label">Engine</span><span class="info-value">' + v.engine + '</span></div>' +
-            '<div class="info-row"><i class="bx bxs-gas-pump bx-md"></i><span class="info-label">Fuel type</span><span class="info-value">' + v.fuel_type + '</span></div>' +
-            '<div class="info-row"><i class="bx bx-sitemap bx-md"></i><span class="info-label">Gearbox</span><span class="info-value">' + v.transmission + '</span></div>' +
-            '<div class="info-row"><i class="bx bx-trending-up bx-md"></i><span class="info-label">Horsepower</span><span class="info-value">' + v.hp_amount + ' HP</span></div>' +
-            '<div class="info-row"><i class="bx bx-calendar bx-md"></i><span class="info-label">Year</span><span class="info-value">' + v.year_of_prod + '</span></div>' +
-            '<div class="info-row"><i class="bx bx-run bx-md"></i><span class="info-label">Mileage</span><span class="info-value">' + v.mileage.toLocaleString() + ' km</span></div>' +
-            '<p class="description-title">DESCRIPTION</p>' +
-            '<p class="description-text">' + v.description + '</p>';
+
+          function makeRow(iconClass, label, value) {
+            var row = document.createElement('div');
+            row.className = 'info-row';
+            var i = document.createElement('i');
+            i.className = iconClass;
+            var lbl = document.createElement('span');
+            lbl.className = 'info-label';
+            lbl.textContent = label;
+            var val = document.createElement('span');
+            val.className = 'info-value';
+            val.textContent = value;
+            row.appendChild(i);
+            row.appendChild(lbl);
+            row.appendChild(val);
+            return row;
+          }
+
+          var title = document.createElement('h3');
+          title.className = 'vehicle-name';
+          title.textContent = v.brand + ' ' + v.model;
+          panel.appendChild(title);
+          panel.appendChild(makeRow('bx bxs-cog bx-md',      'Engine',     v.engine));
+          panel.appendChild(makeRow('bx bxs-gas-pump bx-md', 'Fuel type',  v.fuel_type));
+          panel.appendChild(makeRow('bx bx-sitemap bx-md',   'Gearbox',    v.transmission));
+          panel.appendChild(makeRow('bx bx-trending-up bx-md','Horsepower', v.hp_amount + ' HP'));
+          panel.appendChild(makeRow('bx bx-calendar bx-md',  'Year',       v.year_of_prod));
+          panel.appendChild(makeRow('bx bx-run bx-md',       'Mileage',    v.mileage.toLocaleString() + ' km'));
+
+          var descTitle = document.createElement('p');
+          descTitle.className = 'description-title';
+          descTitle.textContent = 'DESCRIPTION';
+          var descText = document.createElement('p');
+          descText.className = 'description-text';
+          descText.textContent = v.description;
+          panel.appendChild(descTitle);
+          panel.appendChild(descText);
 
           var lightbox = document.getElementById('lightbox');
           var lightboxImg = document.getElementById('lightbox-img');
