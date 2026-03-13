@@ -13,20 +13,58 @@ func HealthCheckHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "healthy"})
 }
 
+func langPrefix(lang string) string {
+	if lang == "pl" {
+		return ""
+	}
+	return "/" + lang
+}
+
 func MainPageHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "main_page.html", nil)
+	lang := getLang(c)
+	c.HTML(http.StatusOK, "main_page.html", gin.H{
+		"T":    langs[lang],
+		"Lang": lang,
+		"LP":   langPrefix(lang),
+	})
 }
 
 func CatalogPageHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "catalog_page.html", nil)
+	lang := getLang(c)
+	c.HTML(http.StatusOK, "catalog_page.html", gin.H{
+		"T":    langs[lang],
+		"Lang": lang,
+		"LP":   langPrefix(lang),
+	})
 }
 
 func AboutPageHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "about_page.html", nil)
+	lang := getLang(c)
+	id := c.Param("id")
+	c.HTML(http.StatusOK, "about_page.html", gin.H{
+		"T":    langs[lang],
+		"Lang": lang,
+		"LP":   langPrefix(lang),
+		"ID":   id,
+	})
+}
+
+func ReviewsPageHandler(c *gin.Context) {
+	lang := getLang(c)
+	c.HTML(http.StatusOK, "review_page.html", gin.H{
+		"T":    langs[lang],
+		"Lang": lang,
+		"LP":   langPrefix(lang),
+	})
 }
 
 func CrudPageHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "add_page.html", nil)
+	lang := getLang(c)
+	c.HTML(http.StatusOK, "add_page.html", gin.H{
+		"T":    langs[lang],
+		"Lang": lang,
+		"LP":   langPrefix(lang),
+	})
 }
 
 func GetAllVehiclesHandler(c *gin.Context) {
