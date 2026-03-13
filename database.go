@@ -4,12 +4,24 @@ import (
 	"context"
 	"errors"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var (
 	db *pgxpool.Pool
 )
+
+func getLang(c *gin.Context) string {
+	path := c.Request.URL.Path
+	if len(path) >= 4 && path[:4] == "/ru/" || path == "/ru" {
+		return "ru"
+	}
+	if len(path) >= 4 && path[:4] == "/en/" || path == "/en" {
+		return "en"
+	}
+	return "pl"
+}
 
 func InitDB(str string) error {
 	var err error

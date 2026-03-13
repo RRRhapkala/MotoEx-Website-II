@@ -28,7 +28,17 @@ func main() {
 	router.GET("/", MainPageHandler)
 	router.GET("/catalog", CatalogPageHandler)
 	router.GET("/about/:id", AboutPageHandler)
+	router.GET("/reviews", ReviewsPageHandler)
 	router.GET("/crud", CrudPageHandler)
+
+	for _, lang := range []string{"ru", "en"} {
+		router.GET("/"+lang+"/", MainPageHandler)
+		router.GET("/"+lang+"/catalog", CatalogPageHandler)
+		router.GET("/"+lang+"/about/:id", AboutPageHandler)
+		router.GET("/"+lang+"/reviews", ReviewsPageHandler)
+		router.GET("/"+lang+"/crud", CrudPageHandler)
+
+	}
 
 	vehicles := router.Group("/cars")
 	{
