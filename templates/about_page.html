@@ -626,16 +626,16 @@
           title.className = 'vehicle-name';
           title.textContent = v.brand + ' ' + v.model;
           panel.appendChild(title);
-          panel.appendChild(makeRow('bx bxs-cog bx-md',      'Engine',     v.engine));
-          panel.appendChild(makeRow('bx bxs-gas-pump bx-md', 'Fuel type',  v.fuel_type));
-          panel.appendChild(makeRow('bx bx-sitemap bx-md',   'Gearbox',    v.transmission));
-          panel.appendChild(makeRow('bx bx-trending-up bx-md','Horsepower', v.hp_amount + ' HP'));
-          panel.appendChild(makeRow('bx bx-calendar bx-md',  'Year',       v.year_of_prod));
-          panel.appendChild(makeRow('bx bx-run bx-md',       'Mileage',    v.mileage.toLocaleString() + ' km'));
+          panel.appendChild(makeRow('bx bxs-cog bx-md',      '{{index .T "engine"}}',     v.engine));
+          panel.appendChild(makeRow('bx bxs-gas-pump bx-md', '{{index .T "fuel_type"}}',  v.fuel_type));
+          panel.appendChild(makeRow('bx bx-sitemap bx-md',   '{{index .T "gearbox"}}',    v.transmission));
+          panel.appendChild(makeRow('bx bx-trending-up bx-md','{{index .T "horsepower"}}', v.hp_amount + ' HP'));
+          panel.appendChild(makeRow('bx bx-calendar bx-md',  '{{index .T "year"}}',       v.year_of_prod));
+          panel.appendChild(makeRow('bx bx-run bx-md',       '{{index .T "mileage"}}',    v.mileage.toLocaleString() + ' km'));
 
           var descTitle = document.createElement('p');
           descTitle.className = 'description-title';
-          descTitle.textContent = 'DESCRIPTION';
+          descTitle.textContent = '{{index .T "description"}}';
           var descText = document.createElement('p');
           descText.className = 'description-text';
           descText.textContent = v.description;
