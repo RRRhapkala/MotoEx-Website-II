@@ -84,7 +84,7 @@ func GetVehicleByIdHandler(c *gin.Context) {
 	}
 	vObj, err := GetVehicleById(vId)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "can't find car"})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, vObj)
@@ -171,7 +171,7 @@ func UpdateVehicleByIdHandler(c *gin.Context) {
 	}
 	vObj, err := UpdateVehicleById(vId, v)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update vehicle"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, vObj)

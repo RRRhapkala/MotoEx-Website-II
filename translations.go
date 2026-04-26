@@ -21,7 +21,7 @@ var langs = map[string]Translations{
 		"horsepower":            "Horsepower",
 		"year":                  "Year",
 		"mileage":               "Mileage",
-		"description":           "DESCRIPRION",
+		"description":           "DESCRIPTION",
 		"customer_reviews":      "CUSTOMER REVIEWS",
 		"customer_reviews_text": "WHAT OUR CLIENTS SAY ABOUT US",
 	},
