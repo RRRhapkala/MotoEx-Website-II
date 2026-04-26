@@ -1,2 +1,7 @@
 motoEnv.env
 howToRun.md
+
+static/uploads/*
+!static/uploads/*/
+static/uploads/*/*
+!static/uploads/*/.gitkeep
