@@ -14,6 +14,10 @@ func HealthCheckHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "healthy"})
 }
 
+func CrudPageHandler(c *gin.Context) {
+	c.File("./templates/add_page.html")
+}
+
 func GetAllVehiclesHandler(c *gin.Context) {
 	retVal, err := GetAllVehicles(c.Request.Context())
 	if err != nil {
