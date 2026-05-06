@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useEmblaCarousel from 'embla-carousel-react';
+import Lightbox from '../components/Lightbox';
 
 const CAROUSEL_IMAGES = [
   'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=1770',
@@ -15,6 +16,8 @@ function Carousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [thumbRef, thumbApi] = useEmblaCarousel({ containScroll: 'keepSnaps', dragFree: true });
   const [selected, setSelected] = useState(0);
+  const [lbOpen, setLbOpen] = useState(false);
+  const [lbStart, setLbStart] = useState(0);
 
   const onThumbClick = useCallback((i: number) => {
     emblaApi?.scrollTo(i);
@@ -34,11 +37,13 @@ function Carousel() {
   return (
     <div>
       <div className="relative">
-        <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+        <div className="overflow-hidden rounded-2xl" ref={emblaRef}
+          style={{ border: '2px solid rgba(255,102,0,0.2)' }}>
           <div className="flex">
             {CAROUSEL_IMAGES.map((src, i) => (
               <div key={i} className="flex-none w-full">
-                <img src={src} alt={`Car ${i + 1}`} loading="lazy" className="w-full aspect-video object-cover" />
+                <img src={src} alt={`Car ${i + 1}`} loading="lazy" className="w-full aspect-video object-cover cursor-zoom-in"
+                  onClick={() => { setLbStart(i); setLbOpen(true); }} />
               </div>
             ))}
           </div>
@@ -47,13 +52,13 @@ function Carousel() {
           onClick={() => emblaApi?.scrollPrev()}
           className="absolute left-3 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-brand/60 flex items-center justify-center transition"
         >
-          <img src="/static/arrow-left.svg" alt="prev" className="w-6 h-6" />
+          <img src="/static/arrow-left.svg" alt="prev" className="w-7 h-7" />
         </button>
         <button
           onClick={() => emblaApi?.scrollNext()}
           className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-brand/60 flex items-center justify-center transition"
         >
-          <img src="/static/arrow-right.svg" alt="next" className="w-6 h-6" />
+          <img src="/static/arrow-right.svg" alt="next" className="w-7 h-7" />
         </button>
       </div>
 
@@ -72,6 +77,8 @@ function Carousel() {
           ))}
         </div>
       </div>
+
+      <Lightbox isOpen={lbOpen} photos={CAROUSEL_IMAGES} initialIndex={lbStart} onClose={() => setLbOpen(false)} />
     </div>
   );
 }
@@ -96,7 +103,11 @@ export default function HomePage() {
       <div className="text-center mt-4 mb-6">
         <p className="section-title">{t('examples')}</p>
       </div>
-      <Carousel />
+      <div className="rounded-2xl shadow-lg my-4 py-1" style={{ background: '#3a3939' }}>
+        <div className="rounded-2xl p-5 mx-5 my-6 border border-brand/10" style={{ background: 'rgba(45,45,45,0.9)' }}>
+          <Carousel />
+        </div>
+      </div>
     </div>
   );
 }

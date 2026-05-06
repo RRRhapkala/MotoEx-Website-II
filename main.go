@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -44,21 +45,32 @@ func main() {
 
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
-	router.GET("/health", HealthCheckHandler)
-	router.GET("/", MainPageHandler)
-	router.GET("/catalog", CatalogPageHandler)
-	router.GET("/about/:id", AboutPageHandler)
-	router.GET("/reviews", ReviewsPageHandler)
-	router.GET("/crud", CrudPageHandler)
 
-	for _, lang := range []string{"ru", "en"} {
-		router.GET("/"+lang+"/", MainPageHandler)
-		router.GET("/"+lang+"/catalog", CatalogPageHandler)
-		router.GET("/"+lang+"/about/:id", AboutPageHandler)
-		router.GET("/"+lang+"/reviews", ReviewsPageHandler)
-		router.GET("/"+lang+"/crud", CrudPageHandler)
+	router.Static("/assets", "./static/dist/assets")
 
-	}
+	router.NoRoute(func(c *gin.Context) {
+		p := c.Request.URL.Path
+		if strings.HasPrefix(p, "/cars") || strings.HasPrefix(p, "/admin") || strings.HasPrefix(p, "/health") {
+			c.JSON(http.StatusNotFound, gin.H{"error": "not found"})
+			return
+		}
+		c.File("./static/dist/index.html")
+	})
+	// router.GET("/health", HealthCheckHandler)
+	// router.GET("/", MainPageHandler)
+	// router.GET("/catalog", CatalogPageHandler)
+	// router.GET("/about/:id", AboutPageHandler)
+	// router.GET("/reviews", ReviewsPageHandler)
+	// router.GET("/crud", CrudPageHandler)
+
+	// for _, lang := range []string{"ru", "en"} {
+	// 	router.GET("/"+lang+"/", MainPageHandler)
+	// 	router.GET("/"+lang+"/catalog", CatalogPageHandler)
+	// 	router.GET("/"+lang+"/about/:id", AboutPageHandler)
+	// 	router.GET("/"+lang+"/reviews", ReviewsPageHandler)
+	// 	router.GET("/"+lang+"/crud", CrudPageHandler)
+
+	// }
 
 	vehicles := router.Group("/cars")
 	{

@@ -1,21 +1,26 @@
 import { Outlet, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LangSwitcher from '../i18n/LangSwitcher';
+import LangSwitcher from './LangSwitcher';
 
 function Navbar() {
   const { t } = useTranslation();
 
   return (
-    <nav className="sticky top-0 z-50 bg-bg-darker/95 backdrop-blur border-b border-white/5 px-6 py-3">
-      <div className="container mx-auto flex items-center gap-8">
+    <nav className="sticky top-0 z-50 backdrop-blur-xl px-6 py-3"
+      style={{ background: 'rgba(30,30,30,0.7)', borderBottom: '1px solid rgba(255,102,0,0.15)', boxShadow: '0 4px 30px rgba(0,0,0,0.3)' }}>
+      <div className="container mx-auto flex items-center">
         <Link to="/">
           <img src="/static/motoex-logo-true.svg" alt="MotoEx" className="h-10" />
         </Link>
-        <div className="flex items-center gap-6 flex-1">
-          <Link to="/catalog" className="text-white/70 hover:text-brand transition tracking-widest text-sm uppercase">
+        <div className="flex items-center gap-2 flex-1 ml-8">
+          <Link to="/catalog"
+            className="text-white/85 hover:text-brand transition px-5 py-2"
+            style={{ fontSize: 22, fontWeight: 400, letterSpacing: 3 }}>
             {t('nav_catalog')}
           </Link>
-          <Link to="/reviews" className="text-white/70 hover:text-brand transition tracking-widest text-sm uppercase">
+          <Link to="/reviews"
+            className="text-white/85 hover:text-brand transition px-5 py-2"
+            style={{ fontSize: 22, fontWeight: 400, letterSpacing: 3 }}>
             {t('nav_reviews')}
           </Link>
         </div>
