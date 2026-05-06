@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"errors"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -27,12 +27,12 @@ func InitDB(str string) error {
 	var err error
 	db, err = pgxpool.New(context.Background(), str)
 	if err != nil {
-		return errors.New("failed to init db")
+		return fmt.Errorf("db initialization: %w", err)
 	}
 
 	err = db.Ping(context.Background())
 	if err != nil {
-		return errors.New("failed to ping db")
+		return fmt.Errorf("db ping: %w", err)
 	}
 	return nil
 }
@@ -42,14 +42,14 @@ func GetAllVehicles() ([]Vehicle, error) {
 	rows, err := db.Query(context.Background(),
 		"SELECT id, brand, model, engine, transmission, hp_amount, fuel_type, year_of_prod, mileage, description, main_photo, photos FROM vehicles")
 	if err != nil {
-		return nil, errors.New("cant make a query")
+		return nil, fmt.Errorf("query vehicles: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var v Vehicle
 		err = rows.Scan(&v.Id, &v.Brand, &v.Model, &v.Engine, &v.Transmission, &v.HPAmount, &v.FuelType, &v.YearOfProd, &v.Mileage, &v.Description, &v.MainPhoto, &v.Photos)
 		if err != nil {
-			return nil, errors.New("cant find a row")
+			return nil, fmt.Errorf("query vehicles: %w", err)
 		}
 		vehicleSlice = append(vehicleSlice, v)
 	}
@@ -62,7 +62,7 @@ func GetVehicleById(id int) (Vehicle, error) {
 		"SELECT id, brand, model, engine, transmission, hp_amount, fuel_type, year_of_prod, mileage, description, main_photo, photos FROM vehicles WHERE id = $1", id)
 	err := row.Scan(&v.Id, &v.Brand, &v.Model, &v.Engine, &v.Transmission, &v.HPAmount, &v.FuelType, &v.YearOfProd, &v.Mileage, &v.Description, &v.MainPhoto, &v.Photos)
 	if err != nil {
-		return Vehicle{}, errors.New("vehicle not found, check Id field")
+		return Vehicle{}, fmt.Errorf("query vehicle by id: %w", err)
 	}
 	return v, nil
 }
@@ -73,7 +73,7 @@ func CreateVehicle(v Vehicle) (Vehicle, error) {
 		v.Brand, v.Model, v.Engine, v.Transmission, v.HPAmount, v.FuelType, v.YearOfProd, v.Mileage, v.Description, v.MainPhoto, v.Photos)
 	err := row.Scan(&v.Id)
 	if err != nil {
-		return Vehicle{}, err
+		return Vehicle{}, fmt.Errorf("create vehicle: %w", err)
 	}
 	return v, nil
 }
@@ -83,11 +83,11 @@ func UpdateVehicleById(id int, v Vehicle) (Vehicle, error) {
 		"UPDATE vehicles SET brand=$1, model=$2, engine=$3, transmission=$4, hp_amount=$5, fuel_type=$6, year_of_prod=$7, mileage=$8, description=$9, main_photo=$10, photos=$11 WHERE id=$12",
 		v.Brand, v.Model, v.Engine, v.Transmission, v.HPAmount, v.FuelType, v.YearOfProd, v.Mileage, v.Description, v.MainPhoto, v.Photos, id)
 	if err != nil {
-		return Vehicle{}, errors.New("can't update vehicle")
+		return Vehicle{}, fmt.Errorf("update vehicle by id: %w", err)
 	}
 	numOfChanges := cT.RowsAffected()
 	if numOfChanges == 0 {
-		return Vehicle{}, errors.New("can't find vehicle for this id")
+		return Vehicle{}, fmt.Errorf("update vehicle by id %d: not found", id)
 	}
 	return v, nil
 }
@@ -96,11 +96,11 @@ func DeleteVehicleById(id int) error {
 	cT, err := db.Exec(context.Background(),
 		"DELETE FROM vehicles WHERE id=$1", id)
 	if err != nil {
-		return errors.New("can't delete vehicle")
+		return fmt.Errorf("delete vehicle by id: %w", err)
 	}
 	numOfhanges := cT.RowsAffected()
 	if numOfhanges == 0 {
-		return errors.New("vehicle not found for id")
+		return fmt.Errorf("delete vehicle by id %d: not found", id)
 	}
 	return nil
 }
