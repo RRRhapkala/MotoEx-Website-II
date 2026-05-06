@@ -1,17 +1,16 @@
 package main
 
 import (
+	"crypto/subtle"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(adminKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
-		aKey := os.Getenv("ADMIN_KEY")
-		if aKey != header {
+		if subtle.ConstantTimeCompare([]byte(adminKey), []byte(header)) != 1 {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			c.Abort()
 			return

@@ -11,10 +11,20 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = ":8080"
+	}
+	adminKey := os.Getenv("ADMIN_KEY")
+	if adminKey == "" {
+		log.Fatal("ADMIN_KEY env required")
+	}
+
 	err := InitDB(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
@@ -25,6 +35,12 @@ func main() {
 	slog.SetDefault(logger)
 
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-type", "Authorization"},
+		AllowCredentials: false,
+	}))
 
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
@@ -50,7 +66,7 @@ func main() {
 		vehicles.GET("/:id", GetVehicleByIdHandler)
 	}
 	adminGroup := router.Group("/admin")
-	adminGroup.Use(AuthMiddleware())
+	adminGroup.Use(AuthMiddleware(adminKey))
 	{
 		adminGroup.POST("", CreateVehicleHandler)
 		adminGroup.PUT("/:id", UpdateVehicleByIdHandler)
@@ -59,8 +75,11 @@ func main() {
 	}
 
 	server := http.Server{
-		Addr:    ":8080",
-		Handler: router,
+		Addr:         port,
+		Handler:      router,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 30 * time.Second,
+		IdleTimeout:  120 * time.Second,
 	}
 
 	quit := make(chan os.Signal, 1)

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -12,6 +13,18 @@ import (
 
 func HealthCheckHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "healthy"})
+}
+
+func getLang(c *gin.Context) string {
+	path := c.Request.URL.Path
+
+	if strings.HasPrefix(path, "/ru/") || path == "/ru/" {
+		return "ru"
+	}
+	if strings.HasPrefix(path, "/en/") || path == "/en/" {
+		return "en"
+	}
+	return "pl"
 }
 
 func langPrefix(lang string) string {
