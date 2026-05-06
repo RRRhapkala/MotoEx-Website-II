@@ -26,7 +26,7 @@ func InitDB(str string) error {
 }
 
 func GetAllVehicles() ([]Vehicle, error) {
-	var vehicleSlice []Vehicle
+	vehicleSlice := []Vehicle{}
 	rows, err := db.Query(context.Background(),
 		"SELECT id, brand, model, engine, transmission, hp_amount, fuel_type, year_of_prod, mileage, description, main_photo, photos FROM vehicles")
 	if err != nil {
@@ -86,8 +86,8 @@ func DeleteVehicleById(id int) error {
 	if err != nil {
 		return fmt.Errorf("delete vehicle by id: %w", err)
 	}
-	numOfhanges := cT.RowsAffected()
-	if numOfhanges == 0 {
+	numOfChanges := cT.RowsAffected()
+	if numOfChanges == 0 {
 		return fmt.Errorf("delete vehicle by id %d: not found", id)
 	}
 	return nil

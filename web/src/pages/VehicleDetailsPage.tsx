@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useEmblaCarousel from 'embla-carousel-react';
+import { useVehicle } from '../hooks/useVehicle';
 
 function PhotoCarousel({ photos, onPhotoClick }: { photos: string[]; onPhotoClick: (i: number) => void }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
@@ -71,27 +72,18 @@ function PhotoCarousel({ photos, onPhotoClick }: { photos: string[]; onPhotoClic
     </div>
   );
 }
-import type { Vehicle } from '../types/vehicle';
-import { fetchVehicle } from '../api/vehicles';
 import Lightbox from '../components/Lightbox';
 
 export default function VehicleDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
-  const [v, setV] = useState<Vehicle | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { data: v, loading, error } = useVehicle(id);
   const [lbOpen, setLbOpen] = useState(false);
   const [lbStart, setLbStart] = useState(0);
 
-  useEffect(() => {
-    if (!id) return;
-    fetchVehicle(Number(id))
-      .then(setV)
-      .catch(e => setError(String(e)));
-  }, [id]);
-
-  if (error) return <div className="text-center py-20 text-red-400">{error}</div>;
-  if (!v)    return <div className="text-center py-20 text-white/50">Loading...</div>;
+  if (loading) return <div className="text-center py-20 text-white/50">Loading...</div>;
+  if (error)   return <div className="text-center py-20 text-red-400">{error}</div>;
+  if (!v)      return null;
 
   const fixPath = (p: string) => p.replace(/^\.\//, '/');
   const allPhotos = [v.main_photo, ...(v.photos || [])].map(fixPath);

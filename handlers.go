@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -13,72 +12,6 @@ import (
 
 func HealthCheckHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "healthy"})
-}
-
-func getLang(c *gin.Context) string {
-	path := c.Request.URL.Path
-
-	if strings.HasPrefix(path, "/ru/") || path == "/ru/" {
-		return "ru"
-	}
-	if strings.HasPrefix(path, "/en/") || path == "/en/" {
-		return "en"
-	}
-	return "pl"
-}
-
-func langPrefix(lang string) string {
-	if lang == "pl" {
-		return ""
-	}
-	return "/" + lang
-}
-
-func MainPageHandler(c *gin.Context) {
-	lang := getLang(c)
-	c.HTML(http.StatusOK, "main_page.html", gin.H{
-		"T":    langs[lang],
-		"Lang": lang,
-		"LP":   langPrefix(lang),
-	})
-}
-
-func CatalogPageHandler(c *gin.Context) {
-	lang := getLang(c)
-	c.HTML(http.StatusOK, "catalog_page.html", gin.H{
-		"T":    langs[lang],
-		"Lang": lang,
-		"LP":   langPrefix(lang),
-	})
-}
-
-func AboutPageHandler(c *gin.Context) {
-	lang := getLang(c)
-	id := c.Param("id")
-	c.HTML(http.StatusOK, "about_page.html", gin.H{
-		"T":    langs[lang],
-		"Lang": lang,
-		"LP":   langPrefix(lang),
-		"ID":   id,
-	})
-}
-
-func ReviewsPageHandler(c *gin.Context) {
-	lang := getLang(c)
-	c.HTML(http.StatusOK, "review_page.html", gin.H{
-		"T":    langs[lang],
-		"Lang": lang,
-		"LP":   langPrefix(lang),
-	})
-}
-
-func CrudPageHandler(c *gin.Context) {
-	lang := getLang(c)
-	c.HTML(http.StatusOK, "add_page.html", gin.H{
-		"T":    langs[lang],
-		"Lang": lang,
-		"LP":   langPrefix(lang),
-	})
 }
 
 func GetAllVehiclesHandler(c *gin.Context) {

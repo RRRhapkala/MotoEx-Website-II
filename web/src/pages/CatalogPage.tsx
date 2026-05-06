@@ -1,22 +1,10 @@
-import { useEffect, useState } from 'react';
-import type { Vehicle } from '../types/vehicle';
-import { fetchVehicles } from '../api/vehicles';
-import { ApiError } from '../api/client';
 import { useTranslation } from 'react-i18next';
 import VehicleCard from '../components/VehicleCard';
+import { useVehicles } from '../hooks/useVehicles';
 
 export default function CatalogPage() {
   const { t } = useTranslation();
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchVehicles()
-      .then(setVehicles)
-      .catch((e: ApiError) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: vehicles, loading, error } = useVehicles();
 
   return (
     <section>
