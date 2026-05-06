@@ -1,14 +1,9 @@
 import { Outlet, Link } from 'react-router-dom';
-
-const LANGS = ['PL', 'RU', 'EN'] as const;
+import { useTranslation } from 'react-i18next';
+import LangSwitcher from '../i18n/LangSwitcher';
 
 function Navbar() {
-  const lang = localStorage.getItem('lang')?.toUpperCase() ?? 'PL';
-
-  const setLang = (l: string) => {
-    localStorage.setItem('lang', l.toLowerCase());
-    window.location.reload();
-  };
+  const { t } = useTranslation();
 
   return (
     <nav className="sticky top-0 z-50 bg-bg-darker/95 backdrop-blur border-b border-white/5 px-6 py-3">
@@ -18,25 +13,13 @@ function Navbar() {
         </Link>
         <div className="flex items-center gap-6 flex-1">
           <Link to="/catalog" className="text-white/70 hover:text-brand transition tracking-widest text-sm uppercase">
-            Catalog
+            {t('nav_catalog')}
           </Link>
           <Link to="/reviews" className="text-white/70 hover:text-brand transition tracking-widest text-sm uppercase">
-            Reviews
+            {t('nav_reviews')}
           </Link>
         </div>
-        <div className="flex items-center gap-2 text-sm">
-          {LANGS.map((l, i) => (
-            <span key={l} className="flex items-center gap-2">
-              {i > 0 && <span className="text-white/20">|</span>}
-              <button
-                onClick={() => setLang(l)}
-                className={lang === l ? 'text-brand font-semibold' : 'text-white/50 hover:text-white transition'}
-              >
-                {l}
-              </button>
-            </span>
-          ))}
-        </div>
+        <LangSwitcher />
       </div>
     </nav>
   );

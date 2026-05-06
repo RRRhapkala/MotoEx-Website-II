@@ -1,0 +1,22 @@
+{
+  "nav_catalog": "CATALOG",
+  "nav_reviews": "REVIEWS",
+  "how_works": "HOW OUR COMPANY WORKS?",
+  "examples": "EXAMPLES OF DELIVERED CARS",
+  "how_works_text": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis impedit corrupti expedita velit ea, quos iure enim quisquam harum consequuntur exercitationem eveniet, corporis fuga error quae nam voluptatem dolor ullam!",
+  "about_us": "ABOUT US",
+  "about_us_text": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ad rerum aut earum corporis. Qui quia, magni illo sequi odit provident perferendis minima ullam autem. Vitae quo nisi dignissimos amet.",
+  "contact_us": "CONTACT US",
+  "adress": "Warsaw, Poland, Street, 00-000",
+  "follow_us": "FOLLOW US",
+  "car_catalog": "CAR CATALOG",
+  "engine": "Engine",
+  "fuel_type": "Fuel type",
+  "gearbox": "Gearbox",
+  "horsepower": "Horsepower",
+  "year": "Year",
+  "mileage": "Mileage",
+  "description": "DESCRIPTION",
+  "customer_reviews": "CUSTOMER REVIEWS",
+  "customer_reviews_text": "WHAT OUR CLIENTS SAY ABOUT US"
+}
