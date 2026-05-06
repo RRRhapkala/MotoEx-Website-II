@@ -1,6 +1,11 @@
 motoEnv.env
 howToRun.md
 
+# React/Node
+web/node_modules/
+web/dist/
+static/dist/
+
 static/uploads/*
 !static/uploads/*/
 static/uploads/*/*
