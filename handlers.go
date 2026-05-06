@@ -15,10 +15,10 @@ func HealthCheckHandler(c *gin.Context) {
 }
 
 func GetAllVehiclesHandler(c *gin.Context) {
-	retVal, err := GetAllVehicles()
+	retVal, err := GetAllVehicles(c.Request.Context())
 	if err != nil {
 		slog.Error("get all vehicles", "err", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal sever error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		return
 	}
 	c.JSON(http.StatusOK, retVal)
@@ -31,7 +31,7 @@ func GetVehicleByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "status bad request"})
 		return
 	}
-	vObj, err := GetVehicleById(vId)
+	vObj, err := GetVehicleById(c.Request.Context(), vId)
 	if err != nil {
 		slog.Error("get vehicle by id", "err", err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "status not found"})
@@ -48,7 +48,7 @@ func CreateVehicleHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "status bad request"})
 		return
 	}
-	vObj, err := CreateVehicle(v)
+	vObj, err := CreateVehicle(c.Request.Context(), v)
 	if err != nil {
 		slog.Error("create vehicle", "err", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "status bad request"})
@@ -64,7 +64,7 @@ func UploadPhotosByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "status bad request"})
 		return
 	}
-	vObj, err := GetVehicleById(vId)
+	vObj, err := GetVehicleById(c.Request.Context(), vId)
 	if err != nil {
 		slog.Error("upload photos by vehicle id", "err", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "status bad request"})
@@ -107,7 +107,7 @@ func UploadPhotosByIdHandler(c *gin.Context) {
 	vObj.MainPhoto = mainPhotoPath
 	vObj.Photos = photosDir
 	var v Vehicle
-	v, err = UpdateVehicleById(vId, vObj)
+	v, err = UpdateVehicleById(c.Request.Context(), vId, vObj)
 	if err != nil {
 		slog.Error("upload photos by vehicle id", "err", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "status internal server error"})
@@ -130,7 +130,7 @@ func UpdateVehicleByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "status bad request"})
 		return
 	}
-	vObj, err := UpdateVehicleById(vId, v)
+	vObj, err := UpdateVehicleById(c.Request.Context(), vId, v)
 	if err != nil {
 		slog.Error("update vehicle by id", "err", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "status bad request"})
@@ -146,7 +146,7 @@ func DeleteVehicleByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "status bad request"})
 		return
 	}
-	err = DeleteVehicleById(vId)
+	err = DeleteVehicleById(c.Request.Context(), vId)
 	if err != nil {
 		slog.Error("delete vehicle by id", "err", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "status bad request"})

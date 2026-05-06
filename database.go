@@ -25,9 +25,9 @@ func InitDB(str string) error {
 	return nil
 }
 
-func GetAllVehicles() ([]Vehicle, error) {
+func GetAllVehicles(ctx context.Context) ([]Vehicle, error) {
 	vehicleSlice := []Vehicle{}
-	rows, err := db.Query(context.Background(),
+	rows, err := db.Query(ctx,
 		"SELECT id, brand, model, engine, transmission, hp_amount, fuel_type, year_of_prod, mileage, description, main_photo, photos FROM vehicles")
 	if err != nil {
 		return nil, fmt.Errorf("query vehicles: %w", err)
@@ -44,9 +44,9 @@ func GetAllVehicles() ([]Vehicle, error) {
 	return vehicleSlice, nil
 }
 
-func GetVehicleById(id int) (Vehicle, error) {
+func GetVehicleById(ctx context.Context, id int) (Vehicle, error) {
 	var v Vehicle
-	row := db.QueryRow(context.Background(),
+	row := db.QueryRow(ctx,
 		"SELECT id, brand, model, engine, transmission, hp_amount, fuel_type, year_of_prod, mileage, description, main_photo, photos FROM vehicles WHERE id = $1", id)
 	err := row.Scan(&v.Id, &v.Brand, &v.Model, &v.Engine, &v.Transmission, &v.HPAmount, &v.FuelType, &v.YearOfProd, &v.Mileage, &v.Description, &v.MainPhoto, &v.Photos)
 	if err != nil {
@@ -55,8 +55,8 @@ func GetVehicleById(id int) (Vehicle, error) {
 	return v, nil
 }
 
-func CreateVehicle(v Vehicle) (Vehicle, error) {
-	row := db.QueryRow(context.Background(),
+func CreateVehicle(ctx context.Context, v Vehicle) (Vehicle, error) {
+	row := db.QueryRow(ctx,
 		"INSERT INTO vehicles (brand, model, engine, transmission, hp_amount, fuel_type, year_of_prod, mileage, description, main_photo, photos) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id",
 		v.Brand, v.Model, v.Engine, v.Transmission, v.HPAmount, v.FuelType, v.YearOfProd, v.Mileage, v.Description, v.MainPhoto, v.Photos)
 	err := row.Scan(&v.Id)
@@ -66,8 +66,8 @@ func CreateVehicle(v Vehicle) (Vehicle, error) {
 	return v, nil
 }
 
-func UpdateVehicleById(id int, v Vehicle) (Vehicle, error) {
-	cT, err := db.Exec(context.Background(),
+func UpdateVehicleById(ctx context.Context, id int, v Vehicle) (Vehicle, error) {
+	cT, err := db.Exec(ctx,
 		"UPDATE vehicles SET brand=$1, model=$2, engine=$3, transmission=$4, hp_amount=$5, fuel_type=$6, year_of_prod=$7, mileage=$8, description=$9, main_photo=$10, photos=$11 WHERE id=$12",
 		v.Brand, v.Model, v.Engine, v.Transmission, v.HPAmount, v.FuelType, v.YearOfProd, v.Mileage, v.Description, v.MainPhoto, v.Photos, id)
 	if err != nil {
@@ -80,8 +80,8 @@ func UpdateVehicleById(id int, v Vehicle) (Vehicle, error) {
 	return v, nil
 }
 
-func DeleteVehicleById(id int) error {
-	cT, err := db.Exec(context.Background(),
+func DeleteVehicleById(ctx context.Context, id int) error {
+	cT, err := db.Exec(ctx,
 		"DELETE FROM vehicles WHERE id=$1", id)
 	if err != nil {
 		return fmt.Errorf("delete vehicle by id: %w", err)
