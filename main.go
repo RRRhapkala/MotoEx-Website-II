@@ -43,10 +43,10 @@ func main() {
 		AllowCredentials: false,
 	}))
 
-	router.Static("/static", "./static")
-	router.Static("/assets", "./static/dist/assets")
 	router.GET("/health", HealthCheckHandler)
 	router.GET("/crud", CrudPageHandler)
+	router.Static("/static", "./static")
+	router.Static("/assets", "./static/dist/assets")
 
 	router.NoRoute(func(c *gin.Context) {
 		p := c.Request.URL.Path
